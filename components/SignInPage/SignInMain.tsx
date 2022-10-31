@@ -9,6 +9,8 @@ import {
 import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import axios from "axios";
+import { useRouter } from "next/router";
 
 type Form = {
   email: string;
@@ -17,7 +19,7 @@ type Form = {
 
 const SignInMain = () => {
   const [loading, setLoading] = useState(false);
-
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -25,9 +27,16 @@ const SignInMain = () => {
     formState: { errors },
   } = useForm<Form>();
 
-  const onSubmit = (data: Form) => {
+  const onSubmit = async (data: Form) => {
     setLoading(true);
-    console.log(data);
+    try {
+      const response = await axios.post("/api/sign-in", { ...data });
+      if (response.data) {
+        router.push("/p/dashboard");
+      }
+    } catch (error) {
+      throw error;
+    }
     setLoading(false);
     reset();
   };

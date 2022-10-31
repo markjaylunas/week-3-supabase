@@ -1,6 +1,7 @@
 import { NextPage } from "next";
 import Head from "next/head";
-import RegisterPage from "../components/pages/RegisterPage";
+import RegisterMain from "../components/RegisterPage/RegisterMain";
+import Layout from "../components/Layout";
 
 const SignUp: NextPage = () => {
   return (
@@ -8,7 +9,9 @@ const SignUp: NextPage = () => {
       <Head>
         <title>Sign Up</title>
       </Head>
-      <RegisterPage />
+      <Layout>
+        <RegisterMain />
+      </Layout>
     </>
   );
 };

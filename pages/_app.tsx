@@ -4,6 +4,7 @@ import { SessionContextProvider, Session } from "@supabase/auth-helpers-react";
 import { useState } from "react";
 import { createBrowserSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { MantineProvider } from "@mantine/core";
+import Layout from "../components/Layout";
 
 type AppSession = {
   session: Session;
@@ -21,7 +22,9 @@ const App = ({ Component, pageProps }: AppProps<AppSession>) => {
         withNormalizeCSS
         theme={{ colorScheme: "dark" }}
       >
-        <Component {...pageProps} />
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
       </MantineProvider>
     </SessionContextProvider>
   );

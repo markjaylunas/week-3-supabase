@@ -6,7 +6,7 @@ type FormField = {
   password: string;
 };
 
-const signUp = async (req: NextApiRequest, res: NextApiResponse) => {
+const register = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "POST") {
     try {
       const { email, password }: FormField = req.body;
@@ -48,4 +48,4 @@ const signUp = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
-export default signUp;
+export default register;

@@ -20,8 +20,23 @@ const profile = async (req: NextApiRequest, res: NextApiResponse) => {
     } catch (e) {
       res.status(500).json({ message: `Something went wrong` });
     }
+  } else if (req.method === "GET") {
+    try {
+      const { data, error: getProfileError } = await supabaseClient
+        .from("profile")
+        .select("*");
+      if (getProfileError) {
+        console.log(getProfileError);
+      } else {
+        res.status(200).json({
+          data,
+        });
+      }
+    } catch (e) {
+      res.status(500).json({ message: `Something went wrong` });
+    }
   } else {
-    res.setHeader("Allow", ["POST"]);
+    res.setHeader("Allow", ["POST", "GET"]);
     res
       .status(405)
       .json({ message: `HTTP method ${req.method} is not supported.` });

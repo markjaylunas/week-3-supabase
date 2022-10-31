@@ -9,10 +9,14 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 import Link from "next/link";
+import { useUser } from "@supabase/auth-helpers-react";
 
 export default function AppShellDemo({ children }: { children: JSX.Element }) {
   const theme = useMantineTheme();
   const [opened, setOpened] = useState(false);
+
+  const user = useUser();
+
   return (
     <AppShell
       styles={{
@@ -32,15 +36,22 @@ export default function AppShellDemo({ children }: { children: JSX.Element }) {
           hidden={!opened}
           width={{ sm: 200, lg: 300 }}
         >
-          <Link href="/register">
-            <Text>Register</Text>
-          </Link>
-          <Link href="/sign-in">
-            <Text>Sign In</Text>
-          </Link>
-          <Link href="/p/dashboard">
-            <Text>Dashboard</Text>
-          </Link>
+          {user === null ? (
+            <>
+              <Link href="/register">
+                <Text>Register</Text>
+              </Link>
+              <Link href="/sign-in">
+                <Text>Sign In</Text>
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link href="/p/dashboard">
+                <Text>Dashboard</Text>
+              </Link>
+            </>
+          )}
         </Navbar>
       }
       header={

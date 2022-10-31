@@ -9,8 +9,9 @@ import {
 import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import axios from "axios";
 import { useRouter } from "next/router";
+import { toast } from "react-toastify";
+import { useSupabaseClient } from "@supabase/auth-helpers-react";
 
 type Form = {
   email: string;
@@ -19,6 +20,7 @@ type Form = {
 
 const SignInMain = () => {
   const [loading, setLoading] = useState(false);
+  const supabaseClient = useSupabaseClient();
   const router = useRouter();
   const {
     register,
@@ -29,13 +31,36 @@ const SignInMain = () => {
 
   const onSubmit = async (data: Form) => {
     setLoading(true);
-    try {
-      const response = await axios.post("/api/sign-in", { ...data });
-      if (response.data) {
-        router.push("/p/dashboard");
-      }
-    } catch (error) {
-      throw error;
+    // try {
+    //   const response = await axios.post("/api/sign-in", { ...data });
+    //   if (response.data) {
+    //     router.push("/p/dashboard");
+    //   }
+    // } catch (error) {
+    //   throw error;
+    // }
+    const toastLoading = toast.loading("Please wait...");
+    const {
+      data: { user },
+      error,
+    } = await supabaseClient.auth.signInWithPassword(data);
+    if (error) {
+      toast.update(toastLoading, {
+        render: error.message,
+        type: "error",
+        isLoading: false,
+        autoClose: 5000,
+      });
+    }
+    if (user) {
+      router.push("/p/dashboard");
+
+      toast.update(toastLoading, {
+        render: `Signed in as ${user.email}`,
+        type: "success",
+        isLoading: false,
+        autoClose: 1000,
+      });
     }
     setLoading(false);
     reset();

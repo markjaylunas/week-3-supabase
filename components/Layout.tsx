@@ -38,6 +38,9 @@ export default function AppShellDemo({ children }: { children: JSX.Element }) {
           <Link href="/sign-in">
             <Text>Sign In</Text>
           </Link>
+          <Link href="/p/dashboard">
+            <Text>Dashboard</Text>
+          </Link>
         </Navbar>
       }
       header={

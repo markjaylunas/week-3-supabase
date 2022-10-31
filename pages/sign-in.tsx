@@ -3,7 +3,7 @@ import Head from "next/head";
 import SignInPage from "../components/SignInPage/SignInMain";
 import Layout from "../components/Layout";
 
-const SignUp: NextPage = () => {
+const SignIn: NextPage = () => {
   return (
     <>
       <Head>
@@ -16,4 +16,4 @@ const SignUp: NextPage = () => {
   );
 };
 
-export default SignUp;
+export default SignIn;

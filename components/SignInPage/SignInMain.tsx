@@ -4,6 +4,7 @@ import {
   Stack,
   Text,
   TextInput,
+  Title,
 } from "@mantine/core";
 import Link from "next/link";
 import { useState } from "react";
@@ -32,6 +33,7 @@ const SignInMain = () => {
   };
   return (
     <Container size="sm">
+      <Title>Sign In</Title>
       <Stack>
         <form onSubmit={handleSubmit(onSubmit)}>
           <TextInput

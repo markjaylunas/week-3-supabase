@@ -5,6 +5,8 @@ import { useState } from "react";
 import { createBrowserSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { MantineProvider } from "@mantine/core";
 import Layout from "../components/Layout";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 type AppSession = {
   session: Session;
@@ -23,7 +25,10 @@ const App = ({ Component, pageProps }: AppProps<AppSession>) => {
         theme={{ colorScheme: "dark" }}
       >
         <Layout>
-          <Component {...pageProps} />
+          <>
+            <Component {...pageProps} />
+            <ToastContainer />
+          </>
         </Layout>
       </MantineProvider>
     </SessionContextProvider>

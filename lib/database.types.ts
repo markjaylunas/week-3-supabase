@@ -9,13 +9,38 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
-      [_ in never]: never
+      profile: {
+        Row: {
+          created_at: string | null
+          email: string | null
+          avatar: string | null
+          id: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email?: string | null
+          avatar?: string | null
+          id?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string | null
+          avatar?: string | null
+          id?: string
+          user_id?: string | null
+        }
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      insert_profile: {
+        Args: { email: string; user_id: string }
+        Returns: unknown
+      }
     }
     Enums: {
       [_ in never]: never

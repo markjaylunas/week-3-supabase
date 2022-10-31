@@ -3,11 +3,11 @@ import Head from "next/head";
 import RegisterMain from "../components/RegisterPage/RegisterMain";
 import Layout from "../components/Layout";
 
-const SignUp: NextPage = () => {
+const Register: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Sign Up</title>
+        <title>Register</title>
       </Head>
       <Layout>
         <RegisterMain />
@@ -16,4 +16,4 @@ const SignUp: NextPage = () => {
   );
 };
 
-export default SignUp;
+export default Register;

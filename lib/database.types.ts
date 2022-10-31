@@ -41,6 +41,10 @@ export interface Database {
         Args: { email: string; user_id: string }
         Returns: unknown
       }
+      select_profile: {
+        Args: { input_user_id: string }
+        Returns: unknown
+      }
     }
     Enums: {
       [_ in never]: never

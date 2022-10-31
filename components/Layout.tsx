@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   AppShell,
   Navbar,
@@ -9,13 +9,26 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 import Link from "next/link";
-import { useUser } from "@supabase/auth-helpers-react";
+import { Session, useSupabaseClient } from "@supabase/auth-helpers-react";
 
 export default function AppShellDemo({ children }: { children: JSX.Element }) {
   const theme = useMantineTheme();
   const [opened, setOpened] = useState(false);
+  const [session, setSession] = useState<Session | null>(null);
+  const supabaseClient = useSupabaseClient();
 
-  const user = useUser();
+  useEffect(() => {
+    const fetchSession = async () => {
+      const { data, error } = await supabaseClient.auth.getSession();
+      if (error) {
+        console.log(error);
+      } else {
+        const sessionData = data.session;
+        setSession(sessionData);
+      }
+    };
+    fetchSession();
+  }, [supabaseClient.auth]);
 
   return (
     <AppShell
@@ -36,7 +49,7 @@ export default function AppShellDemo({ children }: { children: JSX.Element }) {
           hidden={!opened}
           width={{ sm: 200, lg: 300 }}
         >
-          {user === null ? (
+          {session === null ? (
             <>
               <Link href="/register">
                 <Text>Register</Text>

@@ -1,5 +1,6 @@
-import { Container, Loader, Space, Text, Title } from "@mantine/core";
+import { Button, Container, Loader, Space, Text, Title } from "@mantine/core";
 import axios from "axios";
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import PostList from "../../types/post.types";
 import PostListGrid from "./PostListGrid";
@@ -25,6 +26,10 @@ const PostMain = () => {
   return (
     <Container>
       <Title>Image Posts</Title>
+      <Space h={"md"} />
+      <Link href="/p/create-post">
+        <Button>Create Post</Button>
+      </Link>
       <Space h={"md"} />
       {loading ? (
         <Loader />

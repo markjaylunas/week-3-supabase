@@ -112,6 +112,15 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
+      create_post: {
+        Args: {
+          image_input: string
+          description_input: string
+          is_public_input: boolean
+          user_id_input: string
+        }
+        Returns: unknown
+      }
       insert_profile: {
         Args: { email: string; user_id: string }
         Returns: unknown

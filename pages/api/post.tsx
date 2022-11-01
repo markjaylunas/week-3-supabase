@@ -4,25 +4,45 @@ import { Database } from "../../types/database.types";
 
 const analysis = async (req: NextApiRequest, res: NextApiResponse) => {
   const supabaseServer = createServerSupabaseClient<Database>({ req, res });
-  const sessionData = supabaseServer.auth.getSession();
-  const user_id = (await sessionData).data.session?.user.id as string;
+  const {
+    data: { user },
+  } = await supabaseServer.auth.getUser();
+  const user_id = user?.id as string;
+
   if (req.method === "GET") {
     try {
+      const userId = user_id as string;
       const { data: postData, error: postError } = await supabaseServer.rpc(
         "select_post",
-        { user_id_input: user_id }
+        { user_id_input: userId }
       );
 
       if (postError) console.error(postError);
-
       res.status(200).json({
         post: postData,
       });
     } catch (e) {
       res.status(500).json({ message: `Something went wrong` });
     }
+  } else if (req.method === "POST") {
+    const { image, description, is_public } = req.body;
+    try {
+      const { error: postError } = await supabaseServer.rpc("create_post", {
+        image_input: image,
+        description_input: description,
+        is_public_input: is_public,
+        user_id_input: user_id,
+      });
+
+      if (postError) console.error(postError);
+      res.status(200).json({
+        message: "Posted successfully",
+      });
+    } catch (e) {
+      res.status(500).json({ message: `Something went wrong` });
+    }
   } else {
-    res.setHeader("Allow", ["GET"]);
+    res.setHeader("Allow", ["GET", "POST"]);
     res
       .status(405)
       .json({ message: `HTTP method ${req.method} is not supported.` });

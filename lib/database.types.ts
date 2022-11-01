@@ -15,18 +15,21 @@ export interface Database {
           created_at: string | null
           email: string | null
           stood_out: string | null
+          created_by: string | null
         }
         Insert: {
           id?: string
           created_at?: string | null
           email?: string | null
           stood_out?: string | null
+          created_by?: string | null
         }
         Update: {
           id?: string
           created_at?: string | null
           email?: string | null
           stood_out?: string | null
+          created_by?: string | null
         }
       }
       peer_review_score: {
@@ -85,6 +88,18 @@ export interface Database {
     Functions: {
       insert_profile: {
         Args: { email: string; user_id: string }
+        Returns: unknown
+      }
+      select_all_profile: {
+        Args: Record<PropertyKey, never>
+        Returns: unknown
+      }
+      select_keyword: {
+        Args: { keyword_input: string }
+        Returns: unknown
+      }
+      select_peer_review: {
+        Args: Record<PropertyKey, never>
         Returns: unknown
       }
       select_profile: {

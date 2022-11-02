@@ -1,4 +1,4 @@
-import { Button, Table } from "@mantine/core";
+import { Table } from "@mantine/core";
 import React from "react";
 import { PeerReview } from "./PeerReviewMain";
 
@@ -14,9 +14,6 @@ const PeerReviewList = ({
       <tr key={peer.id}>
         <td>{peer.email}</td>
         <td>{dateFormatted}</td>
-        <td>
-          <Button>View</Button>
-        </td>
         {/* <td>{peer.stood_out}</td> */}
       </tr>
     );
@@ -28,7 +25,6 @@ const PeerReviewList = ({
           <th>Peer</th>
           <th>Created At</th>
           {/* <th>Stood Out</th> */}
-          <th>Actions</th>
         </tr>
       </thead>
       <tbody>{rows}</tbody>

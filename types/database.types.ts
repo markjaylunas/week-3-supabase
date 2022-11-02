@@ -177,6 +177,10 @@ export interface Database {
         Args: { input_user_id: string }
         Returns: unknown
       }
+      select_public_post: {
+        Args: Record<PropertyKey, never>
+        Returns: unknown
+      }
     }
     Enums: {
       [_ in never]: never

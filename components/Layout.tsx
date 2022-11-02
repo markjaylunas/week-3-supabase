@@ -60,6 +60,9 @@ export default function AppShellDemo({ children }: { children: JSX.Element }) {
             </>
           ) : (
             <>
+              <Link href="/">
+                <Text>Home</Text>
+              </Link>
               <Link href="/p/dashboard">
                 <Text>Dashboard</Text>
               </Link>

@@ -30,6 +30,9 @@ export default function AppShellDemo({ children }: { children: JSX.Element }) {
     fetchSession();
   }, [supabaseClient.auth]);
 
+  const closeMenu = () => {
+    setOpened(false);
+  };
   return (
     <AppShell
       styles={{
@@ -51,31 +54,31 @@ export default function AppShellDemo({ children }: { children: JSX.Element }) {
         >
           {session === null ? (
             <>
-              <Link href="/register">
+              <Link href="/register" onClick={closeMenu}>
                 <Text>Register</Text>
               </Link>
-              <Link href="/sign-in">
+              <Link href="/sign-in" onClick={closeMenu}>
                 <Text>Sign In</Text>
               </Link>
             </>
           ) : (
             <>
-              <Link href="/">
+              <Link href="/" onClick={closeMenu}>
                 <Text>Home</Text>
               </Link>
-              <Link href="/p/dashboard">
+              <Link href="/p/dashboard" onClick={closeMenu}>
                 <Text>Dashboard</Text>
               </Link>
-              <Link href="/p/post">
+              <Link href="/p/post" onClick={closeMenu}>
                 <Text>Post</Text>
               </Link>
-              <Link href="/p/peer-review">
+              <Link href="/p/peer-review" onClick={closeMenu}>
                 <Text>Peer Review</Text>
               </Link>
-              <Link href="/p/analysis">
+              <Link href="/p/analysis" onClick={closeMenu}>
                 <Text>Keyword Analysis</Text>
               </Link>
-              <Link href="/p/api-call-record">
+              <Link href="/p/api-call-record" onClick={closeMenu}>
                 <Text>API Call Record</Text>
               </Link>
             </>

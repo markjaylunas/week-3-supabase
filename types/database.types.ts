@@ -9,6 +9,26 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      api_call: {
+        Row: {
+          id: string
+          api_name: string | null
+          called_by: string | null
+          created_at: string | null
+        }
+        Insert: {
+          id?: string
+          api_name?: string | null
+          called_by?: string | null
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          api_name?: string | null
+          called_by?: string | null
+          created_at?: string | null
+        }
+      }
       peer_review: {
         Row: {
           id: string
@@ -119,6 +139,10 @@ export interface Database {
           is_public_input: boolean
           user_id_input: string
         }
+        Returns: unknown
+      }
+      insert_api_call: {
+        Args: { api_name_input: string; called_by_input: string }
         Returns: unknown
       }
       insert_profile: {

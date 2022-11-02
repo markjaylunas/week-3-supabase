@@ -1,6 +1,7 @@
 import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { Database } from "../../types/database.types";
+import apiCallRecord from "../../utils/apiCallRecord";
 
 const analysis = async (req: NextApiRequest, res: NextApiResponse) => {
   const supabaseServer = createServerSupabaseClient<Database>({ req, res });
@@ -8,6 +9,15 @@ const analysis = async (req: NextApiRequest, res: NextApiResponse) => {
     data: { user },
   } = await supabaseServer.auth.getUser();
   const user_id = user?.id as string;
+
+  // record api call
+  const baseUrl = req.headers.host;
+  const apiName = req.url as string;
+  const userId = user?.id as string;
+  const apiUrl = `http${
+    baseUrl?.includes("local") ? "" : "s"
+  }://${baseUrl}${apiName}`;
+  await apiCallRecord(apiUrl, userId);
 
   if (req.method === "GET") {
     try {

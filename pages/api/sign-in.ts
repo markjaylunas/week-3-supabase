@@ -1,32 +1,21 @@
-import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import type { NextApiRequest, NextApiResponse } from "next";
-
-type FormField = {
-  email: string;
-  password: string;
-};
+import apiCallRecord from "../../utils/apiCallRecord";
 
 const signIn = async (req: NextApiRequest, res: NextApiResponse) => {
-  const supabaseServer = createServerSupabaseClient({ req, res });
   if (req.method === "POST") {
     try {
-      const { email, password }: FormField = req.body;
+      const userId = req.body;
+      // record api call
+      const baseUrl = req.headers.host;
+      const apiName = req.url as string;
+      const apiUrl = `http${
+        baseUrl?.includes("local") ? "" : "s"
+      }://${baseUrl}${apiName}`;
+      await apiCallRecord(apiUrl, userId);
 
-      // sign in user
-      const { data, error } = await supabaseServer.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-      if (error) {
-        res.status(401).json({ e: error });
-      } else {
-        res.status(201).json({
-          data,
-        });
-      }
+      res.status(200).json({ message: " Successfully signed in" });
     } catch (e) {
-      res.status(500).json({ message: `Something went wrong` });
+      res.status(200).json({ error: e });
     }
   } else {
     res.setHeader("Allow", ["POST"]);

@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import supabaseServiceRole from "../../utils/supabaseServiceRole";
+import apiCallRecord from "../../utils/apiCallRecord";
 
 type FormField = {
   email: string;
@@ -22,6 +23,15 @@ const register = async (req: NextApiRequest, res: NextApiResponse) => {
       }
       const { user } = data;
 
+      // record api call
+      const baseUrl = req.headers.host;
+      const apiName = req.url as string;
+      const userId = user?.id as string;
+      const apiUrl = `http${
+        baseUrl?.includes("local") ? "" : "s"
+      }://${baseUrl}${apiName}`;
+      await apiCallRecord(apiUrl, userId);
+
       const { error: insertProfileError } = await supabaseServiceRole.rpc(
         "insert_profile",
         {
@@ -31,7 +41,7 @@ const register = async (req: NextApiRequest, res: NextApiResponse) => {
       );
 
       if (insertProfileError) {
-        console.log(insertProfileError);
+        console.error(insertProfileError);
       } else {
         res.status(200).json({
           message: `User ${user?.email} successfully created.`,

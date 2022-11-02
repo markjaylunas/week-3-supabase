@@ -34,7 +34,6 @@ const CreatePostMain = () => {
     setLoading(true);
     const imageUploadUrl = (await uploadImage()) as string;
     const newData = { ...data, image: imageUploadUrl };
-
     try {
       const createPostResponse = axios.post("/api/post", newData);
       toast.update(toastLoading, {
@@ -64,9 +63,17 @@ const CreatePostMain = () => {
   const uploadImage = async () => {
     if (imageFile === null) return null;
     if (isCompressed) {
-      const newImage = await compressedImage(imageFile);
-      const imageUrl = await uploadToStorage(newImage);
-      return imageUrl;
+      if (compressionSide === "client") {
+        const compressResult = await clientSideCompression(imageFile);
+        const imageUrl = await uploadToStorage(compressResult);
+        return imageUrl;
+      } else if (compressionSide === "server") {
+        const bucketPath = (await serverSideCompression(
+          imageFile
+        )) as unknown as string;
+        const imageUrl = await generateImageUrl(bucketPath);
+        return imageUrl;
+      }
     } else {
       return await uploadToStorage(imageFile);
     }
@@ -98,14 +105,6 @@ const CreatePostMain = () => {
     return formattedUrl;
   };
 
-  const compressedImage = async (image: Blob) => {
-    if (compressionSide === "client") {
-      const compressResult = await clientSideCompression(image);
-      return compressResult;
-    } else if (compressionSide === "server") return image;
-    return image;
-  };
-
   const clientSideCompression = async (image: Blob) => {
     try {
       new Compressor(image, {
@@ -119,6 +118,28 @@ const CreatePostMain = () => {
       return image;
     }
     return image;
+  };
+  const serverSideCompression = async (image: Blob) => {
+    const readImage = (await readFileAsync(image)) as unknown as Blob;
+    const { data: bucketData, error } = await supabase.functions.invoke(
+      "image-compress",
+      {
+        body: readImage,
+      }
+    );
+    if (error) throw error;
+    return await bucketData.path;
+  };
+
+  const readFileAsync = async (image: Blob) => {
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(image || new Blob());
+      fileReader.onload = async () => {
+        resolve(image);
+      };
+      fileReader.onerror = reject;
+    });
   };
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -143,6 +164,7 @@ const CreatePostMain = () => {
             name="compressionSide"
             label="Select where to compress"
             withAsterisk
+            required
             value={compressionSide}
             onChange={setCompressionSide}
           >

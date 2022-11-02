@@ -14,6 +14,7 @@ import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
 import { PostItem } from "../../types/post.types";
 import supabase from "../../utils/supabaseClient";
+import Compressor from "compressorjs";
 
 const CreatePostMain = () => {
   const [loading, setLoading] = useState(false);
@@ -29,10 +30,10 @@ const CreatePostMain = () => {
   } = useForm<PostItem>();
 
   const onSubmit = async (data: PostItem) => {
+    const toastLoading = toast.loading("Uploading ...");
     setLoading(true);
     const imageUploadUrl = (await uploadImage()) as string;
     const newData = { ...data, image: imageUploadUrl };
-    const toastLoading = toast.loading("Please wait...");
 
     try {
       const createPostResponse = axios.post("/api/post", newData);
@@ -63,24 +64,29 @@ const CreatePostMain = () => {
   const uploadImage = async () => {
     if (imageFile === null) return null;
     if (isCompressed) {
-      // const imageURL = await compressedImage();
-      // return await generateImageUrl(imageURL);
-      return null;
+      const newImage = await compressedImage(imageFile);
+      const imageUrl = await uploadToStorage(newImage);
+      return imageUrl;
     } else {
-      try {
-        const { data: uploadData, error: uploadError } = await supabase.storage
-          .from("post")
-          .upload(`image/${uuidv4()}`, imageFile, {
-            contentType: "image/jpeg",
-          });
+      return await uploadToStorage(imageFile);
+    }
+  };
 
-        if (uploadError) console.error(uploadError);
-        const path = uploadData?.path as string;
-        return await generateImageUrl(path);
-      } catch (error) {
-        console.error(error);
-        return null;
-      }
+  const uploadToStorage = async (image: Blob | null) => {
+    if (image === null) return null;
+    try {
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from("post")
+        .upload(`image/${uuidv4()}`, image, {
+          contentType: "image/jpeg",
+        });
+
+      if (uploadError) console.error(uploadError);
+      const path = uploadData?.path as string;
+      return await generateImageUrl(path);
+    } catch (error) {
+      console.error(error);
+      return null;
     }
   };
 
@@ -92,7 +98,28 @@ const CreatePostMain = () => {
     return formattedUrl;
   };
 
-  // const compressedImage = async () => [console.log(compressionSide)];
+  const compressedImage = async (image: Blob) => {
+    if (compressionSide === "client") {
+      const compressResult = await clientSideCompression(image);
+      return compressResult;
+    } else if (compressionSide === "server") return image;
+    return image;
+  };
+
+  const clientSideCompression = async (image: Blob) => {
+    try {
+      new Compressor(image, {
+        quality: 0.8,
+        success: async (result) => {
+          return result;
+        },
+      });
+    } catch (error) {
+      console.error(error);
+      return image;
+    }
+    return image;
+  };
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const inputFile = e.target.files;

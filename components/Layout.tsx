@@ -63,14 +63,17 @@ export default function AppShellDemo({ children }: { children: JSX.Element }) {
               <Link href="/p/dashboard">
                 <Text>Dashboard</Text>
               </Link>
+              <Link href="/p/post">
+                <Text>Post</Text>
+              </Link>
               <Link href="/p/peer-review">
                 <Text>Peer Review</Text>
               </Link>
               <Link href="/p/analysis">
                 <Text>Keyword Analysis</Text>
               </Link>
-              <Link href="/p/post">
-                <Text>Post</Text>
+              <Link href="/p/api-call-record">
+                <Text>API Call Record</Text>
               </Link>
             </>
           )}

@@ -153,6 +153,10 @@ export interface Database {
         Args: Record<PropertyKey, never>
         Returns: unknown
       }
+      select_api_call: {
+        Args: Record<PropertyKey, never>
+        Returns: unknown
+      }
       select_keyword: {
         Args: { keyword_input: string }
         Returns: unknown

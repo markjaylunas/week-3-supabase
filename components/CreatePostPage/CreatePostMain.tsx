@@ -15,12 +15,14 @@ import { v4 as uuidv4 } from "uuid";
 import { PostItem } from "../../types/post.types";
 import supabase from "../../utils/supabaseClient";
 import Compressor from "compressorjs";
+import { useRouter } from "next/router";
 
 const CreatePostMain = () => {
   const [loading, setLoading] = useState(false);
   const [isCompressed, setIsCompressed] = useState(true);
   const [compressionSide, setCompressionSide] = useState("");
   const [imageFile, setImageFile] = useState<Blob | null>(null);
+  const router = useRouter();
 
   const {
     register,
@@ -56,7 +58,7 @@ const CreatePostMain = () => {
         console.error(err);
       }
     }
-
+    router.push("/p/post");
     setLoading(false);
   };
 

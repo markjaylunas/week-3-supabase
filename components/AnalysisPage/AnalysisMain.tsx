@@ -2,6 +2,7 @@ import {
   Container,
   Group,
   Loader,
+  SegmentedControl,
   Space,
   Text,
   TextInput,
@@ -9,7 +10,9 @@ import {
 import axios, { AxiosError } from "axios";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import PostList from "../../types/post.types";
 import AnalysisTable from "./AnalysisTable";
+import ImageAnalysisTable from "./ImageAnalysisTable";
 
 export type KeywordData = {
   id: number;
@@ -36,9 +39,13 @@ export type ProfileData = {
 
 const AnalysisMain = () => {
   const [loading, setLoading] = useState(false);
+  const [segment, setSegment] = useState("image");
   const { register, handleSubmit } = useForm<{ keyword: string }>();
   const [reviewData, setReviewData] = useState<ReviewData[] | null>(null);
   const [keywordData, setKeywordData] = useState<KeywordData[] | null>(null);
+  const [keywordImageData, setKeywordImageData] = useState<PostList | null>(
+    null
+  );
   const [profileData, setProfileData] = useState<ProfileData[] | null>(null);
   const [keywordInput, setKeywordInput] = useState("");
   const onSubmit = async (data: { keyword: string }) => {
@@ -46,9 +53,16 @@ const AnalysisMain = () => {
     setKeywordInput(data.keyword);
     try {
       setLoading(true);
-      const response = await axios.post("/api/analysis", data);
-      setReviewData(response.data.reviewData);
-      setKeywordData(response.data.keywordData);
+      const response = await axios.post("/api/analysis", {
+        keyword: data.keyword,
+        toSearch: segment,
+      });
+      if (segment === "employee") {
+        setReviewData(response.data.reviewData);
+        setKeywordData(response.data.keywordData);
+      } else {
+        setKeywordImageData(response.data.keywordData);
+      }
       setProfileData(response.data.profileData);
     } catch (error) {
       const err = error as AxiosError | Error;
@@ -72,11 +86,27 @@ const AnalysisMain = () => {
           </button>
         </Group>
       </form>
+
+      <Space h={"md"} />
+      <SegmentedControl
+        value={segment}
+        onChange={setSegment}
+        data={[
+          { label: "Image", value: "image" },
+          { label: "Employee", value: "employee" },
+        ]}
+      />
       <Space h={"md"} />
       {loading ? (
         <Loader />
       ) : reviewData === null ? (
-        <Text>Empty</Text>
+        <Text color={"gray"}>Search a keyword</Text>
+      ) : segment === "image" ? (
+        <ImageAnalysisTable
+          keywordImageData={keywordImageData}
+          profileData={profileData}
+          keyword={keywordInput}
+        />
       ) : (
         <AnalysisTable
           keywordData={keywordData}

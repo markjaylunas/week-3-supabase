@@ -169,6 +169,10 @@ export interface Database {
         Args: { user_id_input: string }
         Returns: unknown
       }
+      select_post_keyword: {
+        Args: { keyword_input: string }
+        Returns: unknown
+      }
       select_profile: {
         Args: { input_user_id: string }
         Returns: unknown

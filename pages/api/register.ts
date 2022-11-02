@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import supabaseServiceRole from "../../utils/supabaseServiceRole";
+import supabaseClient from "../../utils/supabaseClient";
 import apiCallRecord from "../../utils/apiCallRecord";
 
 type FormField = {
@@ -13,7 +13,7 @@ const register = async (req: NextApiRequest, res: NextApiResponse) => {
       const { email, password }: FormField = req.body;
 
       // create user
-      const { data, error } = await supabaseServiceRole.auth.signUp({
+      const { data, error } = await supabaseClient.auth.signUp({
         email,
         password,
       });
@@ -32,7 +32,7 @@ const register = async (req: NextApiRequest, res: NextApiResponse) => {
       }://${baseUrl}${apiName}`;
       await apiCallRecord(apiUrl, userId);
 
-      const { error: insertProfileError } = await supabaseServiceRole.rpc(
+      const { error: insertProfileError } = await supabaseClient.rpc(
         "insert_profile",
         {
           user_id: user?.id || "",

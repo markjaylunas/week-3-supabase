@@ -7,9 +7,12 @@ import {
   MediaQuery,
   Burger,
   useMantineTheme,
+  Footer,
+  Flex,
 } from "@mantine/core";
 import Link from "next/link";
 import { Session, useSupabaseClient } from "@supabase/auth-helpers-react";
+import FBMessenger from "./HomePage/FBMessenger";
 
 export default function AppShellDemo({ children }: { children: JSX.Element }) {
   const theme = useMantineTheme();
@@ -103,6 +106,19 @@ export default function AppShellDemo({ children }: { children: JSX.Element }) {
             <Text>Week 3</Text>
           </div>
         </Header>
+      }
+      footer={
+        <Footer height={60} p="md">
+          <Flex
+            gap="md"
+            justify="flex-end"
+            align="center"
+            direction="row"
+            wrap="wrap"
+          >
+            <FBMessenger />
+          </Flex>
+        </Footer>
       }
     >
       {children}
